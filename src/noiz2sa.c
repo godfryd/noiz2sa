@@ -27,6 +27,7 @@
 #include "degutil.h"
 #include "soundmanager.h"
 #include "attractmanager.h"
+#include "gamepad.h"
 
 static int noSound = 0;
 
@@ -263,7 +264,6 @@ int main(int argc, char *argv[]) {
   int done = 0;
   long prvTickCount = 0;
   int i;
-  int btn;
   SDL_Event event;
   long nowTick;
   int frame;
@@ -277,10 +277,13 @@ int main(int argc, char *argv[]) {
   initTitle();
 
   while ( !done ) {
+    int startBtn = 0, backBtn = 0;
     SDL_PollEvent(&event);
     keys = SDL_GetKeyState(NULL);
-    if ( keys[SDLK_ESCAPE] == SDL_PRESSED || event.type == SDL_QUIT ) done = 1;
-    if ( keys[SDLK_p] == SDL_PRESSED ) {
+    startBtn = SDL_GameControllerGetButton(gamepad, SDL_CONTROLLER_BUTTON_START);
+    backBtn = SDL_GameControllerGetButton(gamepad, SDL_CONTROLLER_BUTTON_BACK);
+    if ( keys[SDLK_ESCAPE] == SDL_PRESSED || event.type == SDL_QUIT || backBtn ) done = 1;
+    if ( keys[SDLK_p] == SDL_PRESSED || startBtn ) {
       if ( !pPrsd ) {
 	if ( status == IN_GAME ) {
 	  status = PAUSE;
