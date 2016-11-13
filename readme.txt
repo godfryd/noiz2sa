@@ -1,6 +1,6 @@
 Noiz2sa  readme.txt
 for Windows98/2000/XP
-ver. 0.6
+ver. 0.60
 (C) Kenta Cho
 
 アブストラクトシューティング、Noiz2sa。
