@@ -76,7 +76,7 @@ void FoeCommand::doVanish() {
 }
 
 void FoeCommand::doChangeDirection(double d) {
-  foe->d = (int)(d*DIV/360);
+  foe->d = (int)(d*DIV/360) & (DIV-1);
 }
 
 void FoeCommand::doChangeSpeed(double s) {
