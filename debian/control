@@ -1,0 +1,21 @@
+Source: noiz2sa
+Section: games
+Priority: optional
+Maintainer: Robert Lemmen <robertle@semistable.com>
+Homepage: http://www.asahi-net.or.jp/~cs8k-cyu/windows/noiz2sa_e.html
+Build-Depends: debhelper (>= 4.0.0), libsdl1.2-dev, libsdl-mixer1.2-dev, libboost-dev, bison
+Standards-Version: 3.9.8
+
+Package: noiz2sa
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, noiz2sa-data (= ${source:Version})
+Description: abstract arcade shooter
+ A classical vertical arcade shooter with an abstract theme and
+ matching electronic music
+
+Package: noiz2sa-data
+Architecture: all
+Depends: ${misc:Depends}
+Description: abstract arcade shooter, data files
+ This package contains sounds and other data files for noiz2sa, an abstract 
+ arcade shooter.

@@ -1,0 +1,79 @@
+noiz2sa (0.51a-10) unstable; urgency=medium
+
+  * Maintenance Release
+    * Added debhelper misc-depends
+    * Added recommended default targets to debian/rules
+    * Use dh_prep instead of dh_clean
+    * Switch to debhelper compat level 7
+    * Removed debian/watch
+    * Added debian/source/format
+    * Update debian/rules with some hardening flags
+    * Set standards-version to 3.9.8
+
+ -- Robert Lemmen <robertle@semistable.com>  Sat, 11 Jun 2016 08:43:55 +0100
+
+noiz2sa (0.51a-9) unstable; urgency=low
+
+  * Link with -lm (closes: #555774)
+  * Fixed some conversion errors (closes: #646453)
+  * Added a .desktop files (closes: #538036)
+  * Update to newer policy version
+
+ -- Robert Lemmen <robertle@semistable.com>  Wed, 16 Nov 2011 17:58:48 +0000
+
+noiz2sa (0.51a-8) unstable; urgency=low
+
+  * More fixes for GCC 4.3 (closes: #455140)
+  * Fixed the uscan watch file (closes: #450021)
+
+ -- Robert Lemmen <robertle@semistable.com>  Wed,  5 Mar 2008 17:50:27 +0000
+
+noiz2sa (0.51a-7) unstable; urgency=low
+
+  * Added a menu item
+
+ -- Robert Lemmen <robertle@semistable.com>  Tue, 28 Aug 2007 18:27:01 +0200
+
+noiz2sa (0.51a-6) unstable; urgency=low
+
+  * Include additional headers to make noiz2sa build with GCC 4.3 
+    (closes: #417450)
+  * Made the package binNMU-friendly
+
+ -- Robert Lemmen <robertle@semistable.com>  Mon, 16 Apr 2007 10:04:30 +0200
+
+noiz2sa (0.51a-5) unstable; urgency=low
+
+  * Fixed a problem that made the build fail with g++ 4.1, thanks tbm
+    (closes: #356424)
+
+ -- Robert Lemmen <robertle@semistable.com>  Tue, 21 Mar 2006 09:49:26 +0100
+
+noiz2sa (0.51a-4) unstable; urgency=low
+
+  * Fixed the debian/rules file to properly pass compiler options to the
+    makefiles (also fixes FTBFS problems on m68k)
+
+ -- Robert Lemmen <robertle@semistable.com>  Fri, 19 Aug 2005 10:29:18 +0200
+
+noiz2sa (0.51a-3) unstable; urgency=low
+
+  * Rebuild for g++ transition
+  * Updated to newer standards version
+
+ -- Robert Lemmen <robertle@semistable.com>  Tue, 19 Jul 2005 10:56:44 +0200
+
+noiz2sa (0.51a-2) unstable; urgency=low
+
+  * Uses the libboost package now instead of it's own copy of the files
+  * Makefile cleanups
+  * Also clean tinyxml subdir
+
+ -- Robert Lemmen <robertle@semistable.com>  Mon, 22 Nov 2004 19:26:48 +0100
+
+noiz2sa (0.51a-1) unstable; urgency=low
+
+  * Initial Release. (closes: #259066)
+
+ -- Robert Lemmen <robertle@semistable.com>  Mon, 15 Nov 2004 11:37:18 +0100
+

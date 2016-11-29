@@ -1,0 +1,3 @@
+?package(noiz2sa):needs="X11" section="Games/Action"\
+  title="noiz2sa" command="/usr/games/noiz2sa" \
+  icon="/usr/share/pixmaps/noiz2sa.xpm"

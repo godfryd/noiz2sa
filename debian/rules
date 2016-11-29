@@ -1,0 +1,72 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+CFLAGS:=$(shell dpkg-buildflags --get CFLAGS)
+CXXFLAGS:=$(shell dpkg-buildflags --get CXXFLAGS)
+LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS)
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+
+build: build-stamp
+
+build-stamp: configure-stamp 
+	dh_testdir
+	RELEASE_CFLAGS="$(CFLAGS)" $(MAKE) -C src/bulletml/tinyxml
+	CXXFLAGS="$(CXXFLAGS)" $(MAKE) -C src/bulletml 
+	CXXFLAGS="$(CXXFLAGS)" MORE_CFLAGS="$(LDFLAGS)" $(MAKE) -C src
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+	-cd src/bulletml && $(MAKE) clean
+	-cd src/bulletml/tinyxml && $(MAKE) clean
+	-cd src && $(MAKE) clean
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	mkdir -p debian/noiz2sa/usr/games
+	mkdir -p debian/noiz2sa/usr/share/doc
+	mkdir -p debian/noiz2sa-data/usr/share/games/noiz2sa
+	cp src/noiz2sa debian/noiz2sa/usr/games
+	cp -r noiz2sa_share/* debian/noiz2sa-data/usr/share/games/noiz2sa
+
+build-arch: build
+
+build-indep: build
+
+binary-indep: install
+
+binary-arch: install
+	dh_testdir
+	dh_testroot
+	dh_installmenu
+	dh_installchangelogs -p noiz2sa-data
+	dh_installdocs -p noiz2sa-data
+	ln -s noiz2sa-data debian/noiz2sa/usr/share/doc/noiz2sa 
+	dh_install debian/noiz2sa.xpm /usr/share/pixmaps/
+	dh_install debian/noiz2sa.desktop /usr/share/applications/
+	dh_installman debian/noiz2sa.6
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
