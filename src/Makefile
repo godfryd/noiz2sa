@@ -19,11 +19,12 @@ CPPFLAGS  = $(DEFAULT_CFLAGS) $(MORE_CFLAGS) -I./bulletml/
 
 OBJS =	$(NAME).$(O) ship.$(O) shot.$(O) frag.$(O) bonus.$(O) \
 	foe.$(O) foecommand.$(O) barragemanager.$(O) attractmanager.$(O) \
+        gamepad.$(O) \
 	background.$(O) letterrender.$(O) \
 	screen.$(O) clrtbl.$(O) vector.$(O) degutil.$(O) rand.$(O) soundmanager.$(O) \
 	$(NAME)_res.$(O)
 
-$(PROG): $(OBJS) 
+$(PROG): $(OBJS)
 	$(CC) $(CFLAGS) -o $(PROG) $(OBJS) $(LDFLAGS)
 
 $(NAME)_res.o: $(NAME).rc
