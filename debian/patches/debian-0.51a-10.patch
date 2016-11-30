@@ -118,7 +118,7 @@
    struct foe *foe;
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -7,26 +7,27 @@ RM     = rm -f
+@@ -7,27 +7,28 @@ RM     = rm -f
  CC     = gcc
  CXX    = g++
  
@@ -139,12 +139,13 @@
  
  OBJS =	$(NAME).$(O) ship.$(O) shot.$(O) frag.$(O) bonus.$(O) \
  	foe.$(O) foecommand.$(O) barragemanager.$(O) attractmanager.$(O) \
+         gamepad.$(O) \
  	background.$(O) letterrender.$(O) \
  	screen.$(O) clrtbl.$(O) vector.$(O) degutil.$(O) rand.$(O) soundmanager.$(O) \
 -	$(NAME)_res.$(O)
 +#	$(NAME)_res.$(O)
  
- $(PROG): $(OBJS) 
+ $(PROG): $(OBJS)
  	$(CC) $(CFLAGS) -o $(PROG) $(OBJS) $(LDFLAGS)
  
 -$(NAME)_res.o: $(NAME).rc
