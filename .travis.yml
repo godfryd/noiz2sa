@@ -1,0 +1,46 @@
+sudo: required
+dist: trusty
+language: c
+branches:
+  only:
+  - debian
+
+before_script:
+  - export LC_ALL=C LC_TYPE=C LANG=
+  - lscpu
+  - nproc
+  - free -g
+#  - sudo apt-get install debian-archive-keyring
+#  - echo 'deb http://ftp.de.debian.org/debian/ sid main' | sudo tee -a /etc/apt/sources.list
+  - sudo apt-get update
+  - sudo apt-get -o Dpkg::Options::="--force-overwrite" install -yy dpkg-dev debhelper git-buildpackage pbuilder qemu-user-static ubuntu-keyring debian-archive-keyring colorgcc
+  - wget http://archive.raspbian.org/raspbian/pool/main/r/raspbian-archive-keyring/raspbian-archive-keyring_20120528.2_all.deb
+  - sudo dpkg -i raspbian-archive-keyring_20120528.2_all.deb
+  - rm -rf raspbian-archive-keyring_20120528.2_all.deb
+  - sudo OS=raspbian DIST=raspbian-jessie ARCH=armhf pbuilder --create
+  - wget -O ~/.pbuilderrc https://www.dropbox.com/s/fg9bxqlsuc8myye/.pbuilderrc?dl=0
+  - sudo mkdir -p /var/cache/pbuilder/raspbian-jessie-armhf/aptcache
+  - sudo wget -O /var/cache/pbuilder/base-raspbian-jessie-armhf.tgz https://www.dropbox.com/s/hzqm8udpd43ztou/base-raspbian-jessie-armhf.tgz?dl=0
+#  - git fetch origin +pristine-tar:pristine-tar
+  - git fetch origin +master:master
+  - git fetch origin +upstream:upstream
+  - git checkout debian
+  - curver=`dpkg-parsechangelog -SVersion`
+  - commits=`git rev-list --count upstream..HEAD`
+  - newver="$curver~$commits"
+  - echo $newver
+  - sed -i "s/${curver}/${newver}/" debian/changelog
+script: >
+  OS=raspbian BUILDER=pbuilder gbp buildpackage --git-ignore-new --git-no-pristine-tar --git-upstream-tag='%(version)s' --git-pbuilder --git-builder=pbuilder --git-verbose --git-dist=raspbian-jessie --git-arch=armhf -j2 &&
+  ls -al ..
+
+after_script:
+  - gem install package_cloud
+  - cd ..
+  - for d in  `ls *deb`; do package_cloud yank godfryd/gof-console/raspbian/jessie $d || true; done
+  - for d in  `ls *deb`; do package_cloud push godfryd/gof-console/raspbian/jessie $d; done
+env:
+  global:
+    - TRAVIS_CC=colorgcc
+    - DEB_BUILD_OPTIONS='parallel=2'
+    - LINTIAN_PROFILE=debian
