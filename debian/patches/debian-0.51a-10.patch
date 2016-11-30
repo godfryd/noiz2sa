@@ -1,0 +1,155 @@
+--- a/src/bulletml/bulletmlcommon.h
++++ b/src/bulletml/bulletmlcommon.h
+@@ -1,11 +1,13 @@
+ #ifndef bulletmlcommon_h_
+ #define bulletmlcommon_h_
+ 
++#ifndef DECLSPEC
+ #ifdef WIN32_DLL_EXPORT
+ # define DECLSPEC __declspec(dllexport)
+ #else
+ # define DECLSPEC
+ #endif
++#endif
+ 
+ #endif // ! bulletmlcommon_h_
+ 
+--- a/src/bulletml/calc.yy
++++ b/src/bulletml/calc.yy
+@@ -11,12 +11,13 @@ typedef double NumType;
+ 
+ #include <vector>
+ #include <sstream>
++#include <string.h>
+ 
+ #include "calc.h"
+ #include "formula.h"
+ #include "formula-variables.h"
+ 
+-int yyerror(char* s);
++int yyerror(const char* s);
+ int yylex();
+ 
+ const char* yyinStr;
+@@ -148,7 +149,7 @@ int yylex ()
+ 	return c;
+ }
+ 
+-int yyerror(char* s) {
++int yyerror(const char* s) {
+ 	printf("yyerror: %s\n", s);
+ 	return 0;
+ }
+--- a/src/bulletml/Makefile
++++ b/src/bulletml/Makefile
+@@ -1,10 +1,10 @@
+ CC = g++
+-INCLUDES = -I.
++INCLUDES = -I/usr/include
+ LIBS = tinyxml/tinyxml.o tinyxml/tinyxmlparser.o tinyxml/tinyxmlerror.o
+ #CXXFLAGS = -g -W -Wall -ansi -pedantic
+ #CXXFLAGS = -pg -g -W -Wall -ansi -pedantic
+-CXXFLAGS = -O2 -W -Wall -ansi -pedantic
+-CFLAGS = -O2
++CXXFLAGS ?= -O2 -g -Wall
++CFLAGS ?= -O2
+ OBJS = bulletmlparser-tinyxml.o bulletmlparser.o bulletmltree.o calc.o formula-variables.o bulletmlrunner.o bulletmlrunnerimpl.o
+ 
+ all: libbulletml.a
+--- a/src/bulletml/tinyxml/Makefile
++++ b/src/bulletml/tinyxml/Makefile
+@@ -21,8 +21,8 @@ LD     := g++
+ AR     := ar rc
+ RANLIB := ranlib
+ 
+-DEBUG_CFLAGS     := -Wall -Wno-unknown-pragmas -Wno-format -g -DDEBUG
+-RELEASE_CFLAGS   := -Wall -Wno-unknown-pragmas -Wno-format -O2
++DEBUG_CFLAGS     ?= -Wall -Wno-unknown-pragmas -Wno-format -g -DDEBUG
++RELEASE_CFLAGS   ?= -Wall -Wno-unknown-pragmas -Wno-format -O2
+ 
+ LIBS		 :=
+ 
+--- a/src/bulletml/tinyxml/tinyxml.cpp
++++ b/src/bulletml/tinyxml/tinyxml.cpp
+@@ -22,6 +22,7 @@ distribution.
+ */
+ 
+ #include "tinyxml.h"
++#include <string.h>
+ 
+ 
+ TiXmlNode::TiXmlNode( NodeType _type )
+--- a/src/bulletml/tinyxml/tinyxml.h
++++ b/src/bulletml/tinyxml/tinyxml.h
+@@ -25,6 +25,7 @@ distribution.
+ #ifndef TINYXML_INCLUDED
+ #define TINYXML_INCLUDED
+ 
++#include <cstdlib>
+ #include <string>
+ #include <stdio.h>
+ #include <assert.h>
+--- a/src/bulletml/tinyxml/tinyxmlparser.cpp
++++ b/src/bulletml/tinyxml/tinyxmlparser.cpp
+@@ -24,6 +24,7 @@ distribution.
+ 
+ #include "tinyxml.h"
+ #include <ctype.h>
++#include <string.h>
+ 
+ const char* TiXmlBase::SkipWhiteSpace( const char* p )
+ {
+--- a/src/foecommand.h
++++ b/src/foecommand.h
+@@ -36,10 +36,10 @@ class FoeCommand : public BulletMLRunner
+   
+   virtual void doChangeDirection(double d);
+   virtual void doChangeSpeed(double s);
+-  virtual void FoeCommand::doAccelX(double ax);
+-  virtual void FoeCommand::doAccelY(double ay);
+-  virtual double FoeCommand::getBulletSpeedX();
+-  virtual double FoeCommand::getBulletSpeedY();
++  virtual void doAccelX(double ax);
++  virtual void doAccelY(double ay);
++  virtual double getBulletSpeedX();
++  virtual double getBulletSpeedY();
+   
+  private:
+   struct foe *foe;
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -7,26 +7,27 @@ RM     = rm -f
+ CC     = gcc
+ CXX    = g++
+ 
+-PROG        = $(NAME).exe
++PROG        = $(NAME)
+ 
+ DEFAULT_CFLAGS = `sdl-config --cflags`
+-LDFLAGS        = `sdl-config --libs` -L. -lmingw32 -lmingwex -lSDL_mixer -lbulletml -mwindows -lstdc++
++LDFLAGS        = `sdl-config --libs` -lSDL_mixer -Lbulletml \
++    -lbulletml -lstdc++ -lm
+ 
+-MORE_CFLAGS = -O3
++MORE_CFLAGS ?= -O3
+ 
+ CFLAGS  = $(DEFAULT_CFLAGS) $(MORE_CFLAGS)
+-CPPFLAGS  = $(DEFAULT_CFLAGS) $(MORE_CFLAGS) -I./bulletml/
++CPPFLAGS  = $(DEFAULT_CFLAGS) $(MORE_CFLAGS) -I/usr/include
+ 
+ OBJS =	$(NAME).$(O) ship.$(O) shot.$(O) frag.$(O) bonus.$(O) \
+ 	foe.$(O) foecommand.$(O) barragemanager.$(O) attractmanager.$(O) \
+ 	background.$(O) letterrender.$(O) \
+ 	screen.$(O) clrtbl.$(O) vector.$(O) degutil.$(O) rand.$(O) soundmanager.$(O) \
+-	$(NAME)_res.$(O)
++#	$(NAME)_res.$(O)
+ 
+ $(PROG): $(OBJS) 
+ 	$(CC) $(CFLAGS) -o $(PROG) $(OBJS) $(LDFLAGS)
+ 
+-$(NAME)_res.o: $(NAME).rc
+-	windres -i $(NAME).rc -o $(NAME)_res.o
++#$(NAME)_res.o: $(NAME).rc
++#	windres -i $(NAME).rc -o $(NAME)_res.o
+ clean:
+ 	$(RM) $(PROG) *.$(O)
